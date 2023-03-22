@@ -1,4 +1,4 @@
-package com.tinkoff.translator.db.mappers;
+package com.tinkoff.translator.db.row_mappers;
 
 import com.tinkoff.translator.db.entities.TranslationResult;
 import org.springframework.jdbc.core.RowMapper;

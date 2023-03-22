@@ -8,9 +8,15 @@ import com.tinkoff.translator.client.dto.IamTokenDto;
 import com.tinkoff.translator.client.dto.YaMessageDto;
 import com.tinkoff.translator.client.dto.OAuthToken;
 import com.tinkoff.translator.client.dto.YaTranslationDto;
+import com.tinkoff.translator.db.entities.TranslationResult;
+import com.tinkoff.translator.db.row_mappers.TranslationResultRowMapper;
+import com.tinkoff.translator.mappers.MessageMapper;
+import com.tinkoff.translator.mappers.TranslationMapper;
+import com.tinkoff.translator.mappers.TranslationResultMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -35,5 +41,25 @@ public class ApplicationConfig {
     @Bean
     public TranslatorClient<YaMessageDto, YaTranslationDto> getTranslationClient() {
         return new YandexTranslatorClient(getIamToken(getTokenClient()));
+    }
+
+    @Bean
+    public MessageMapper getMessageMapper() {
+        return new MessageMapper();
+    }
+
+    @Bean
+    public RowMapper<TranslationResult> getTranslationResultRowMapper() {
+        return new TranslationResultRowMapper();
+    }
+
+    @Bean
+    public TranslationMapper getTranslationMapper() {
+        return new TranslationMapper();
+    }
+
+    @Bean
+    public TranslationResultMapper getTranslationResultMapper() {
+        return new TranslationResultMapper();
     }
 }
