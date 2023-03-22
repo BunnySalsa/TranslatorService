@@ -1,15 +1,16 @@
 package com.tinkoff.translator.client.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class TranslationDto {
+@AllArgsConstructor
+public class IamTokenDto {
 
-    private List<TextDto> translations;
+    private String iamToken;
+    private LocalDateTime expiresAt;
 }
