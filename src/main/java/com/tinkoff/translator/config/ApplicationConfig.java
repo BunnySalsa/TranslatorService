@@ -13,11 +13,17 @@ import com.tinkoff.translator.db.row_mappers.TranslationResultRowMapper;
 import com.tinkoff.translator.mappers.MessageMapper;
 import com.tinkoff.translator.mappers.TranslationMapper;
 import com.tinkoff.translator.mappers.TranslationResultMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.client.RestTemplate;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 @Configuration
 public class ApplicationConfig {
@@ -41,6 +47,14 @@ public class ApplicationConfig {
     @Bean
     public TranslatorClient<YaMessageDto, YaTranslationDto> getTranslationClient() {
         return new YandexTranslatorClient(getIamToken(getTokenClient()));
+    }
+
+    @Bean
+    @Scope(scopeName = "prototype")
+    public Connection getConnection(Environment environment) throws SQLException {
+        return DriverManager.getConnection(environment.getProperty("spring.datasource.url"),
+                environment.getProperty("spring.datasource.username"),
+                environment.getProperty("spring.datasource.password"));
     }
 
     @Bean

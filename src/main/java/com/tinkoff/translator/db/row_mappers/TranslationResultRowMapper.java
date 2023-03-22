@@ -12,8 +12,6 @@ public class TranslationResultRowMapper implements RowMapper<TranslationResult> 
     private static final String TARGET_LANG_FIELD = "target_lang";
     private static final String SOURCE_TEXT_FIELD = "source_text";
     private static final String TARGET_TEXT_FIELD = "target_text";
-    private static final String ANSWER_TIME_FIELD = "answer_time";
-    private static final String CLIENT_IP_FIELD = "client_ip";
 
     @Override
     public TranslationResult mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -22,8 +20,6 @@ public class TranslationResultRowMapper implements RowMapper<TranslationResult> 
                 .sourceLang(rs.getString(SOURCE_LANG_FIELD))
                 .targetLang(rs.getString(TARGET_LANG_FIELD))
                 .sourceText(rs.getString(SOURCE_TEXT_FIELD))
-                .targetText(rs.getString(TARGET_TEXT_FIELD))
-                .answerTime(rs.getInt(ANSWER_TIME_FIELD))
-                .clientIp(rs.getString(CLIENT_IP_FIELD)).build();
+                .targetText(rs.getString(TARGET_TEXT_FIELD)).build();
     }
 }
