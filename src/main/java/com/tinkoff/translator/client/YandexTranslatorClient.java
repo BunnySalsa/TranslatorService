@@ -6,7 +6,6 @@ import com.tinkoff.translator.client.dto.YaTranslationDto;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
@@ -14,8 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Scope(scopeName = "prototype")//TODO Изменить на prototype
-public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, YaTranslationDto>{
+public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, YaTranslationDto> {
     private static final String BASE_API_URL = "https://translate.api.cloud.yandex.net";
     private static final String TRANSLATE_API_URL = "/translate/v2/translate";
 

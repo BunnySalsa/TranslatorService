@@ -1,7 +1,9 @@
 package com.tinkoff.translator.db.entities;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -10,6 +12,7 @@ import lombok.*;
 public class TranslationResult {
 
     private Long id;
+    private Long request;
     private String sourceLang;
     private String targetLang;
     private String sourceText;

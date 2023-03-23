@@ -28,7 +28,7 @@ public class TranslatorController {
     @PostMapping
     public ResponseEntity<TranslationDto> translate(@RequestBody MessageDto message, HttpServletRequest request) {
         try {
-            return ResponseEntity.ok(service.serve(message, LocalTime.now().getNano(), request.getRemoteAddr()));
+            return ResponseEntity.ok(service.serve(message, LocalTime.now().getNano()/1000, request.getRemoteAddr()));
         } catch (SQLException e) {
             return ResponseEntity.badRequest().build();
         }

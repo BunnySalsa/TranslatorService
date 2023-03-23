@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 public class CustomScopeRegistryBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        beanFactory.registerScope("token", new TokenScopeConfigurer());
+        beanFactory.registerScope("token", new TokenScope());
     }
 }

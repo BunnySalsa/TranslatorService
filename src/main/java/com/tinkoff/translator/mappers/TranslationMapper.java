@@ -7,10 +7,11 @@ import com.tinkoff.translator.dto.TranslationDto;
 
 public class TranslationMapper {
 
-    public TranslationDto toServiceDto(YaTranslationDto dto, MessageDto messageDto) {
+    public TranslationDto toServiceDto(YaTranslationDto translationDto, MessageDto messageDto) {
         return TranslationDto.builder()
-                .sourceLang(messageDto.getSourceLang())
+                .sourceLang(messageDto.getSourceLang() == null ?
+                        translationDto.getTranslations().get(0).getDetectedLanguageCode() : messageDto.getSourceLang())
                 .targetLang(messageDto.getTargetLang())
-                .translatedWords(dto.getTranslations().stream().map(TextDto::getText).toList()).build();
+                .translatedWords(translationDto.getTranslations().stream().map(TextDto::getText).toList()).build();
     }
 }
