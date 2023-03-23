@@ -11,6 +11,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,14 +33,42 @@ public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, Ya
         this.token = token;
     }
 
-    public YaTranslationDto translate(YaMessageDto message) throws RestClientException {
+    public YaTranslationDto translate(YaMessageDto message) throws RestClientException, ExecutionException, InterruptedException {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token.getIamToken());
         message.setFolderId(folderId);
-        HttpEntity<YaMessageDto> request = new HttpEntity<>(message, headers);
-        return template.postForObject(BASE_API_URL + TRANSLATE_API_URL, request, YaTranslationDto.class);
+        YaTranslationDto result = new YaTranslationDto();
+        List<YaMessageDto> list = message.getTexts().stream().map(x -> YaMessageDto.builder().sourceLang(message.getSourceLang())
+                .targetLang(message.getTargetLang())
+                .folderId(message.getFolderId())
+                .texts(List.of(x)).build()).toList();
+        List<Future<YaTranslationDto>> futures = new ArrayList<>();
+        ExecutorService service = Executors.newFixedThreadPool(10);
+        for (YaMessageDto messageDto : list) {
+            futures.add(service.submit(new RequestRunnable(messageDto, headers)));
+        }
+        for (Future<YaTranslationDto> dto : futures) {
+            result.getTranslations().addAll(dto.get().getTranslations());
+        }
+        service.shutdown();
+        return result;
     }
 
+    public class RequestRunnable implements Callable<YaTranslationDto> {
+        private final YaMessageDto messageDto;
+        private final HttpHeaders headers;
+
+        public RequestRunnable(YaMessageDto messageDto, HttpHeaders headers) {
+            this.messageDto = messageDto;
+            this.headers = headers;
+        }
+
+        @Override
+        public YaTranslationDto call() throws Exception {
+            return template.postForObject(BASE_API_URL + TRANSLATE_API_URL,
+                    new HttpEntity<>(messageDto, headers), YaTranslationDto.class);
+        }
+    }
 }
 
 

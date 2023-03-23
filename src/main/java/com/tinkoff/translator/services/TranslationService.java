@@ -19,6 +19,7 @@ import org.springframework.web.client.RestClientException;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class TranslationService {
@@ -47,7 +48,7 @@ public class TranslationService {
         this.requestMapper = requestMapper;
     }
 
-    public TranslationDto serve(MessageDto messageDto, int divider, int start, String clientIp) {
+    public TranslationDto serve(MessageDto messageDto, int divider, int start, String clientIp) throws ExecutionException, InterruptedException {
         YaMessageDto yaMessageDto = messageDtoMapper.toYaDto(messageDto);
         YaTranslationDto yaTranslationDto = client.translate(yaMessageDto);
         RequestEntity request = requestMapper.toQuery(Math.abs(LocalTime.now().getNano() - start) / divider, clientIp);
