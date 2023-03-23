@@ -10,10 +10,10 @@ import com.tinkoff.translator.client.dto.YaMessageDto;
 import com.tinkoff.translator.client.dto.YaTranslationDto;
 import com.tinkoff.translator.db.entities.TranslationResult;
 import com.tinkoff.translator.db.row_mappers.TranslationResultRowMapper;
-import com.tinkoff.translator.mappers.MessageMapper;
+import com.tinkoff.translator.mappers.MessageDtoMapper;
 import com.tinkoff.translator.mappers.RequestMapper;
+import com.tinkoff.translator.mappers.TranslationDtoMapper;
 import com.tinkoff.translator.mappers.TranslationMapper;
-import com.tinkoff.translator.mappers.TranslationResultMapper;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,8 +65,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public MessageMapper getMessageMapper() {
-        return new MessageMapper();
+    public MessageDtoMapper getMessageMapper() {
+        return new MessageDtoMapper();
     }
 
     @Bean
@@ -75,13 +75,13 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public TranslationMapper getTranslationMapper() {
-        return new TranslationMapper();
+    public TranslationDtoMapper getTranslationMapper() {
+        return new TranslationDtoMapper();
     }
 
     @Bean
-    public TranslationResultMapper getTranslationResultMapper() {
-        return new TranslationResultMapper();
+    public TranslationMapper getTranslationResultMapper() {
+        return new TranslationMapper();
     }
 
     @Bean

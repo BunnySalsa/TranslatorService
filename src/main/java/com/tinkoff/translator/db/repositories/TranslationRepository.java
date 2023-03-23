@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @Repository
-public class TranslationResultRepository {
+public class TranslationRepository {
     private static final int NUMBER_OF_QUERY_COLUMN = 1;
     private static final int NUMBER_OF_SOURCE_LANG_COLUMN = 2;
     private static final int NUMBER_OF_TARGET_LANG_COLUMN = 3;
@@ -19,7 +19,7 @@ public class TranslationResultRepository {
             "(request,source_lang,target_lang,source_text,target_text) VALUES (?,?,?,?,?)";
     private Connection connection;
 
-    public TranslationResultRepository(@Autowired Connection connection) {
+    public TranslationRepository(@Autowired Connection connection) {
         this.connection = connection;
     }
 
