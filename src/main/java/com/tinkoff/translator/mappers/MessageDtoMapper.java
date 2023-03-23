@@ -5,7 +5,7 @@ import com.tinkoff.translator.dto.MessageDto;
 
 import java.util.List;
 
-public class MessageMapper {
+public class MessageDtoMapper {
     private static final String PATTERN = "\\P{L}+";
 
     public YaMessageDto toYaDto(MessageDto messageDto) {

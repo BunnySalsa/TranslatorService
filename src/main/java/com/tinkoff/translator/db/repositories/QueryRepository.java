@@ -20,20 +20,20 @@ public class QueryRepository {
     }
 
 
-    public RequestEntity save(RequestEntity entity) {
-        try (PreparedStatement statement = connection.prepareStatement(PS_INSERT_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
+    public boolean save(RequestEntity entity) {
+        try (PreparedStatement statement = connection.prepareStatement(PS_INSERT_REQUEST,
+                Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(NUMBER_OF_ANSWER_TIME_COLUMN, entity.getAnswerTime());
             statement.setString(NUMBER_OF_CLIENT_IP_COLUMN, entity.getClientIp());
             if (statement.executeUpdate() > 0) {
                 ResultSet rs = statement.getGeneratedKeys();
                 rs.next();
                 entity.setId(rs.getLong(1));
-                return entity;
+                return true;
             }
-            return null;
+            return false;
         } catch (SQLException exception) {
-            System.out.println(exception.getMessage());
-            return null;
+            return false;
         }
     }
 }

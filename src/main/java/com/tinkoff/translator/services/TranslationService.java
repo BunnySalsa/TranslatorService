@@ -6,17 +6,17 @@ import com.tinkoff.translator.client.dto.YaTranslationDto;
 import com.tinkoff.translator.db.entities.RequestEntity;
 import com.tinkoff.translator.db.entities.TranslationResult;
 import com.tinkoff.translator.db.repositories.QueryRepository;
-import com.tinkoff.translator.db.repositories.TranslationResultRepository;
+import com.tinkoff.translator.db.repositories.TranslationRepository;
 import com.tinkoff.translator.dto.MessageDto;
 import com.tinkoff.translator.dto.TranslationDto;
-import com.tinkoff.translator.mappers.MessageMapper;
+import com.tinkoff.translator.mappers.MessageDtoMapper;
 import com.tinkoff.translator.mappers.RequestMapper;
+import com.tinkoff.translator.mappers.TranslationDtoMapper;
 import com.tinkoff.translator.mappers.TranslationMapper;
-import com.tinkoff.translator.mappers.TranslationResultMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
-import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,39 +24,39 @@ import java.util.List;
 public class TranslationService {
 
     private TranslatorClient<YaMessageDto, YaTranslationDto> client;
-    private TranslationResultRepository translationResultRepository;
+    private TranslationRepository translationRepository;
     private QueryRepository queryRepository;
-    private TranslationResultMapper translationResultMapper;
-    private MessageMapper messageMapper;
     private TranslationMapper translationMapper;
+    private MessageDtoMapper messageDtoMapper;
+    private TranslationDtoMapper translationDtoMapper;
     private RequestMapper requestMapper;
 
     public TranslationService(@Autowired TranslatorClient<YaMessageDto, YaTranslationDto> client,
-                              @Autowired TranslationResultMapper translationResultMapper,
-                              @Autowired MessageMapper messageMapper,
-                              @Autowired RequestMapper requestMapper,
                               @Autowired TranslationMapper translationMapper,
+                              @Autowired MessageDtoMapper messageDtoMapper,
+                              @Autowired RequestMapper requestMapper,
+                              @Autowired TranslationDtoMapper translationDtoMapper,
                               @Autowired QueryRepository queryRepository,
-                              @Autowired TranslationResultRepository translationResultRepository) {
+                              @Autowired TranslationRepository translationRepository) {
         this.client = client;
-        this.translationResultRepository = translationResultRepository;
+        this.translationRepository = translationRepository;
         this.queryRepository = queryRepository;
-        this.translationResultMapper = translationResultMapper;
-        this.messageMapper = messageMapper;
         this.translationMapper = translationMapper;
+        this.messageDtoMapper = messageDtoMapper;
+        this.translationDtoMapper = translationDtoMapper;
         this.requestMapper = requestMapper;
     }
 
-    public TranslationDto serve(MessageDto messageDto, int start, String clientIp) throws SQLException {
-        YaMessageDto yaMessageDto = messageMapper.toYaDto(messageDto);
+    public TranslationDto serve(MessageDto messageDto, int divider, int start, String clientIp) {
+        YaMessageDto yaMessageDto = messageDtoMapper.toYaDto(messageDto);
         YaTranslationDto yaTranslationDto = client.translate(yaMessageDto);
-        RequestEntity request = requestMapper.toQuery( LocalTime.now().getNano()/1000 - start, clientIp);
+        RequestEntity request = requestMapper.toQuery(Math.abs(LocalTime.now().getNano() - start) / divider, clientIp);
         queryRepository.save(request);
-        List<TranslationResult> resultList = translationResultMapper
-                .toTranslationResult(request.getId(),yaTranslationDto, yaMessageDto);
+        List<TranslationResult> resultList = translationMapper
+                .toTranslationResult(request.getId(), yaTranslationDto, yaMessageDto);
         for (TranslationResult result : resultList) {
-            translationResultRepository.save(result);
+            translationRepository.save(result);
         }
-        return translationMapper.toServiceDto(yaTranslationDto, messageDto);
+        return translationDtoMapper.toServiceDto(yaTranslationDto, messageDto);
     }
 }

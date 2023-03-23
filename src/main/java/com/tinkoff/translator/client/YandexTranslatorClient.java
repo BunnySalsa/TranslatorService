@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Data
@@ -28,7 +29,7 @@ public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, Ya
         this.token = token;
     }
 
-    public YaTranslationDto translate(YaMessageDto message) {
+    public YaTranslationDto translate(YaMessageDto message) throws RestClientException {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token.getIamToken());
         message.setFolderId(folderId);
