@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 
 @Configuration
 public class ApplicationConfig {
@@ -56,7 +57,7 @@ public class ApplicationConfig {
     @Bean
     @Scope(scopeName = "prototype")
     public Connection getConnection(Environment environment) throws SQLException {
-        return DriverManager.getConnection(environment.getProperty("spring.datasource.url"),
+        return DriverManager.getConnection(Objects.requireNonNull(environment.getProperty("spring.datasource.url")),
                 environment.getProperty("spring.datasource.username"),
                 environment.getProperty("spring.datasource.password"));
     }

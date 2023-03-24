@@ -12,9 +12,9 @@ import java.util.Map;
 
 
 public class TokenScope implements Scope {
-    private static final long LIFECYCLE_HOURS = 1;
+    private static final long LIFECYCLE_HOURS = 12;
     private final Map<String, Pair<LocalTime, Object>> scopedObjects = new HashMap<>();
-    private Map<String, Runnable> destructionCallbacks = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String, Runnable> destructionCallbacks = Collections.synchronizedMap(new HashMap<>());
 
     @Override
     public Object get(String name, ObjectFactory<?> objectFactory) {

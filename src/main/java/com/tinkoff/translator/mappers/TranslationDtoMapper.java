@@ -7,11 +7,14 @@ import com.tinkoff.translator.dto.TranslationDto;
 
 public class TranslationDtoMapper {
 
+    public static final String DIDN_T_DETECTED = "didn't detected";
+
     public TranslationDto toServiceDto(YaTranslationDto translationDto, MessageDto messageDto) {
+        String detectedLanguage = translationDto.getTranslations().isEmpty() ?  DIDN_T_DETECTED
+                : translationDto.getTranslations().get(0).getDetectedLanguageCode();
         return TranslationDto.builder()
-                .sourceLang(messageDto.getSourceLang() == null ?
-                        translationDto.getTranslations().get(0).getDetectedLanguageCode() : messageDto.getSourceLang())
-                .targetLang(messageDto.getTargetLang())
+                .sourceLanguage(messageDto.getSourceLanguage() == null ? detectedLanguage : messageDto.getSourceLanguage())
+                .targetLanguage(messageDto.getTargetLanguage())
                 .translatedWords(translationDto.getTranslations().stream().map(TextDto::getText).toList()).build();
     }
 }

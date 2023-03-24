@@ -25,10 +25,10 @@
                 <constraints nullable="false" primaryKeyName="pk_translation" primaryKey="true"
                              foreignKeyName="fk_request" references="request(id)"/>
             </column>
-            <column name="source_lang" type="varchar(2)">
+            <column name="source_language" type="varchar(2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="target_lang" type="varchar(2)">
+            <column name="target_language" type="varchar(2)">
                 <constraints nullable="false"/>
             </column>
             <column name="source_text" type="varchar(10000)">

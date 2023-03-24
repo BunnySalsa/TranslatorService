@@ -27,7 +27,7 @@ class TranslatorApplicationTests {
     void clientTest() {
         Assert.notNull(client, "Client shouldn't be null");
         YaMessageDto messageDto = YaMessageDto.builder()
-                .sourceLang("en").targetLang("ru").texts(List.of("Hello world")).build();
+                .sourceLanguage("en").targetLanguage("ru").texts(List.of("Hello world")).build();
         try {
             YaTranslationDto result = client.translate(messageDto);
             Assert.notNull(result, "Answer shouldn't be null");
@@ -37,7 +37,7 @@ class TranslatorApplicationTests {
         } catch (InterruptedException | ExecutionException exception) {
             Assert.isTrue(false, "Thread exception");
         } catch (RestClientException e) {
-            Assert.isTrue(false, "RestClientException");
+            Assert.isTrue(false, "RestClient exception");
         }
     }
 

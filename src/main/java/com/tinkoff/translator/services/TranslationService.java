@@ -7,9 +7,6 @@ import com.tinkoff.translator.dto.MessageDto;
 import com.tinkoff.translator.dto.TranslationDto;
 import com.tinkoff.translator.mappers.MessageDtoMapper;
 import com.tinkoff.translator.mappers.TranslationDtoMapper;
-import com.tinkoff.translator.mappers.TranslationMapper;
-import com.tinkoff.translator.repositories.RequestRepository;
-import com.tinkoff.translator.repositories.TranslationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +18,6 @@ public class TranslationService {
 
 
     private final TranslatorClient<YaMessageDto, YaTranslationDto> client;
-    private final TranslationRepository translationRepository;
-    private final RequestRepository requestRepository;
-    private final TranslationMapper translationMapper;
     private final MessageDtoMapper messageDtoMapper;
     private final TranslationDtoMapper translationDtoMapper;
     private final StorageService storageService;

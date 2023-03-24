@@ -10,6 +10,5 @@ WORKDIR /app
 EXPOSE 8081
 ENV OAuth-token y0_AgAAAABXco2tAATuwQAAAADfFp0PXf4JVyp5Q4O1FZVuT6ooVZqHjkg
 ENV folderId b1gkd141l14iovkfjeif
-COPY /target/translator-0.0.1-SNAPSHOT.jar .
 COPY --from=0 /target/*-jar-with-dependencies.jar .
-ENTRYPOINT ["java", "-jar","translator-0.0.1-SNAPSHOT.jar", "-port=8081"]
+ENTRYPOINT ["java", "-jar","translator-0.0.1-SNAPSHOT-jar-with-dependencies.jar", "-port=8081"]

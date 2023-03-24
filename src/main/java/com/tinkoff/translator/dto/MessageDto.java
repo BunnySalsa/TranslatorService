@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MessageDto {
 
-    private String sourceLang;
-    private String targetLang;
+    private String sourceLanguage;
+    private String targetLanguage;
     private String message;
 }

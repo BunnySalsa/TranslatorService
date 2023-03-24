@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 
-import java.time.LocalTime;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -27,9 +26,10 @@ public class TranslatorController {
             return ResponseEntity.ok(service.translate(message,
                     request.getRemoteAddr()));
         } catch (ExecutionException | InterruptedException exception) {
+            Thread.currentThread().interrupt();
             return ResponseEntity.internalServerError().build();
         } catch (RestClientException exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 

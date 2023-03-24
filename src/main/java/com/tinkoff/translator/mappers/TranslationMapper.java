@@ -18,9 +18,9 @@ public class TranslationMapper {
         for (int i = 0; i < translations.size(); i++) {
             TranslationResultEntity translationResultEntity = TranslationResultEntity.builder()
                     .request(request)
-                    .sourceLang(translations.get(i).getDetectedLanguageCode() == null ? messageDto.getSourceLang() :
+                    .sourceLang(translations.get(i).getDetectedLanguageCode() == null ? messageDto.getSourceLanguage() :
                             translations.get(i).getDetectedLanguageCode())
-                    .targetLang(messageDto.getTargetLang())
+                    .targetLang(messageDto.getTargetLanguage())
                     .sourceText(texts.get(i))
                     .targetText(translations.get(i).getText())
                     .build();
