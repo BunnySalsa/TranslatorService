@@ -8,8 +8,6 @@ import com.tinkoff.translator.client.dto.IamTokenDto;
 import com.tinkoff.translator.client.dto.OAuthToken;
 import com.tinkoff.translator.client.dto.YaMessageDto;
 import com.tinkoff.translator.client.dto.YaTranslationDto;
-import com.tinkoff.translator.db.entities.TranslationResult;
-import com.tinkoff.translator.db.row_mappers.TranslationResultRowMapper;
 import com.tinkoff.translator.mappers.MessageDtoMapper;
 import com.tinkoff.translator.mappers.RequestMapper;
 import com.tinkoff.translator.mappers.TranslationDtoMapper;
@@ -19,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Connection;
@@ -67,11 +64,6 @@ public class ApplicationConfig {
     @Bean
     public MessageDtoMapper getMessageMapper() {
         return new MessageDtoMapper();
-    }
-
-    @Bean
-    public RowMapper<TranslationResult> getTranslationResultRowMapper() {
-        return new TranslationResultRowMapper();
     }
 
     @Bean

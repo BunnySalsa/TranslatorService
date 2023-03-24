@@ -1,9 +1,11 @@
-package com.tinkoff.translator.db.entities;
+package com.tinkoff.translator.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -11,6 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RequestEntity {
     private Long id;
-    private int answerTime;
+    private OffsetDateTime requestTime;
     private String clientIp;
 }

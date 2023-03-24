@@ -4,7 +4,6 @@ import com.tinkoff.translator.client.dto.IamTokenDto;
 import com.tinkoff.translator.client.dto.YaMessageDto;
 import com.tinkoff.translator.client.dto.YaTranslationDto;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,42 +15,61 @@ import java.util.List;
 import java.util.concurrent.*;
 
 @Data
-@NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, YaTranslationDto> {
     private static final String BASE_API_URL = "https://translate.api.cloud.yandex.net";
     private static final String TRANSLATE_API_URL = "/translate/v2/translate";
-
-    private IamTokenDto token;
+    private static final long TIMEOUT_IN_SECONDS = 20;
+    private static final int MAX_THREADS = 10;
+    private final IamTokenDto token;
     @Value("${yandex.folder-id}")
     private String folderId;
-    @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
     private RestTemplate template = new RestTemplate();
 
-    public YandexTranslatorClient(@Autowired IamTokenDto token) {
-        this.token = token;
-    }
-
-    public YaTranslationDto translate(YaMessageDto message) throws RestClientException, ExecutionException, InterruptedException {
+    public YaTranslationDto translate(YaMessageDto messageDto) throws RestClientException, ExecutionException, InterruptedException {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token.getIamToken());
-        message.setFolderId(folderId);
-        YaTranslationDto result = new YaTranslationDto();
-        List<YaMessageDto> list = message.getTexts().stream().map(x -> YaMessageDto.builder().sourceLang(message.getSourceLang())
-                .targetLang(message.getTargetLang())
-                .folderId(message.getFolderId())
-                .texts(List.of(x)).build()).toList();
+        messageDto.setFolderId(folderId);
+        return assembleYaTranslationDto(requestInThreads(messageDto, headers));
+    }
+
+    private List<YaTranslationDto> requestInThreads(YaMessageDto messageDto, HttpHeaders headers) throws InterruptedException {
+        List<YaMessageDto> list = divideYaMessageDto(messageDto);
         List<Future<YaTranslationDto>> futures = new ArrayList<>();
-        ExecutorService service = Executors.newFixedThreadPool(10);
-        for (YaMessageDto messageDto : list) {
-            futures.add(service.submit(new RequestRunnable(messageDto, headers)));
-        }
-        for (Future<YaTranslationDto> dto : futures) {
-            result.getTranslations().addAll(dto.get().getTranslations());
+        ExecutorService service = Executors.newFixedThreadPool(MAX_THREADS);
+        for (YaMessageDto dto : list) {
+            futures.add(service.submit(new RequestRunnable(dto, headers)));
         }
         service.shutdown();
-        return result;
+        List<YaTranslationDto> translationDtoList = new ArrayList<>();
+        if (service.awaitTermination(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS)) {
+            translationDtoList.addAll(futures.stream().map(this::saveGet).toList());
+        }
+        return translationDtoList;
+    }
+
+    private YaTranslationDto saveGet(Future<YaTranslationDto> future) {
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException exception) {
+            return null;
+        }
+    }
+
+    private List<YaMessageDto> divideYaMessageDto(YaMessageDto messageDto) {
+        return messageDto.getTexts().stream().map(x -> YaMessageDto.builder().sourceLang(messageDto.getSourceLang())
+                .targetLang(messageDto.getTargetLang())
+                .folderId(messageDto.getFolderId())
+                .texts(List.of(x)).build()).toList();
+    }
+
+    private YaTranslationDto assembleYaTranslationDto(List<YaTranslationDto> list) {
+        YaTranslationDto translationDto = new YaTranslationDto(new ArrayList<>());
+        for (YaTranslationDto dto : list) {
+            translationDto.getTranslations().addAll(dto.getTranslations());
+        }
+        return translationDto;
     }
 
     public class RequestRunnable implements Callable<YaTranslationDto> {

@@ -1,9 +1,11 @@
 package com.tinkoff.translator.mappers;
 
-import com.tinkoff.translator.db.entities.RequestEntity;
+import com.tinkoff.translator.entities.RequestEntity;
+
+import java.time.OffsetDateTime;
 
 public class RequestMapper {
-     public RequestEntity toQuery(int answerTime, String clientIp) {
-         return RequestEntity.builder().answerTime(answerTime).clientIp(clientIp).build();
+     public RequestEntity toRequest(OffsetDateTime answerTime, String clientIp) {
+         return RequestEntity.builder().requestTime(answerTime).clientIp(clientIp).build();
      }
 }

@@ -1,21 +1,23 @@
-package com.tinkoff.translator.db.repositories;
+package com.tinkoff.translator.repositories;
 
-import com.tinkoff.translator.db.entities.RequestEntity;
+import com.tinkoff.translator.entities.RequestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.format.DateTimeFormatter;
 
 @Repository
-public class QueryRepository {
+public class RequestRepository {
 
-    private static final int NUMBER_OF_ANSWER_TIME_COLUMN = 1;
+    private static final int NUMBER_OF_ID_COLUMN = 1;
+    private static final int NUMBER_OF_REQUEST_TIME_COLUMN = 1;
     private static final int NUMBER_OF_CLIENT_IP_COLUMN = 2;
     private static final String PS_INSERT_REQUEST = "INSERT INTO translator_scheme.request" +
-            "(answer_time,client_ip) VALUES (?,?)";
+            "(request_time,client_ip) VALUES (?,?)";
     private Connection connection;
 
-    public QueryRepository(@Autowired Connection connection) {
+    public RequestRepository(@Autowired Connection connection) {
         this.connection = connection;
     }
 
@@ -23,12 +25,12 @@ public class QueryRepository {
     public boolean save(RequestEntity entity) {
         try (PreparedStatement statement = connection.prepareStatement(PS_INSERT_REQUEST,
                 Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(NUMBER_OF_ANSWER_TIME_COLUMN, entity.getAnswerTime());
+            statement.setString(NUMBER_OF_REQUEST_TIME_COLUMN, entity.getRequestTime().format(DateTimeFormatter.ISO_DATE_TIME));
             statement.setString(NUMBER_OF_CLIENT_IP_COLUMN, entity.getClientIp());
             if (statement.executeUpdate() > 0) {
                 ResultSet rs = statement.getGeneratedKeys();
                 rs.next();
-                entity.setId(rs.getLong(1));
+                entity.setId(rs.getLong(NUMBER_OF_ID_COLUMN));
                 return true;
             }
             return false;

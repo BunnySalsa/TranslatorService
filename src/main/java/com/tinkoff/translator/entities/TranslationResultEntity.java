@@ -1,4 +1,4 @@
-package com.tinkoff.translator.db.entities;
+package com.tinkoff.translator.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TranslationResult {
+public class TranslationResultEntity {
 
     private Long id;
     private Long request;

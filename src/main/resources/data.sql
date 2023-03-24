@@ -4,7 +4,7 @@ USE translator_scheme;
 
 CREATE TABLE request (
     id bigint auto_increment PRIMARY KEY,
-    answer_time int NOT NULL,
+    request_time varchar(33) NOT NULL,
     client_ip varchar(15) NOT NULL
 );
 
