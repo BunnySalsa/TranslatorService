@@ -11,9 +11,9 @@ import java.util.List;
 public class YaMessageDto {
 
     @JsonSetter("sourceLanguageCode")
-    private String sourceLang;
+    private String sourceLanguage;
     @JsonSetter("targetLanguageCode")
-    private String targetLang;
+    private String targetLanguage;
     private String folderId;
     private List<String> texts;
 }

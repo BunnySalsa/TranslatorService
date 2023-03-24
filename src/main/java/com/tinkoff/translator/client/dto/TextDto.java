@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 public class TextDto {
     private String text;
     private String detectedLanguageCode;
+
+    public TextDto(String text) {
+        this.text = text;
+    }
 }

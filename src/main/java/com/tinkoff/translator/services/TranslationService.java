@@ -1,36 +1,31 @@
 package com.tinkoff.translator.services;
 
 import com.tinkoff.translator.client.TranslatorClient;
-import com.tinkoff.translator.client.dto.TextDto;
 import com.tinkoff.translator.client.dto.YaMessageDto;
 import com.tinkoff.translator.client.dto.YaTranslationDto;
 import com.tinkoff.translator.dto.MessageDto;
 import com.tinkoff.translator.dto.TranslationDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.tinkoff.translator.mappers.MessageDtoMapper;
+import com.tinkoff.translator.mappers.TranslationDtoMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.ExecutionException;
 
 @Service
+@RequiredArgsConstructor
 public class TranslationService {
 
-    private TranslatorClient<YaMessageDto, YaTranslationDto> client;
 
-    public TranslationService(@Autowired TranslatorClient<YaMessageDto, YaTranslationDto> client) {
-        this.client = client;
-    }
+    private final TranslatorClient<YaMessageDto, YaTranslationDto> client;
+    private final MessageDtoMapper messageDtoMapper;
+    private final TranslationDtoMapper translationDtoMapper;
+    private final StorageService storageService;
 
-    public TranslationDto serve(MessageDto message) {
-        YaMessageDto yaMessageDto = YaMessageDto.builder()
-                .sourceLang(message.getSourceLang())
-                .targetLang(message.getTargetLang())
-                .texts(List.of(message.getMessage().split(" "))).build();
-        YaTranslationDto result = client.translate(yaMessageDto);
-        return TranslationDto.builder()
-                .sourceLang(message.getSourceLang())
-                .targetLang(message.getTargetLang())
-                .translatedWords(result.getTranslations().stream().map(TextDto::getText).collect(Collectors.toList()))
-                .build();
+    public TranslationDto translate(MessageDto messageDto, String clientIp) throws ExecutionException, InterruptedException {
+        YaMessageDto yaMessageDto = messageDtoMapper.toYaDto(messageDto);
+        YaTranslationDto yaTranslationDto = client.translate(yaMessageDto);
+        storageService.save(clientIp, yaMessageDto, yaTranslationDto);
+        return translationDtoMapper.toServiceDto(yaTranslationDto, messageDto);
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TranslationDto {
 
-    private String sourceLang;
-    private String targetLang;
+    private String sourceLanguage;
+    private String targetLanguage;
     private List<String> translatedWords;
 }

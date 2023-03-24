@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.web.client.RestTemplate;
 
 @Scope(scopeName = "prototype")
-public class YandexTokenClient implements TokenClient<IamTokenDto>{
+public class YandexTokenClient implements TokenClient<IamTokenDto> {
     private static final String CREATE_IAM_TOKEN_URL = "https://iam.api.cloud.yandex.net/iam/v1/tokens";
     private final RestTemplate restTemplate;
     private final OAuthToken oAuthToken;

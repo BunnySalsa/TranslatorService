@@ -13,18 +13,15 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>translator</name>
 	<description>A test task for entering the Tinkoff Incubator</description>
+	<packaging>jar</packaging>
 	<properties>
-		<java.version>19</java.version>
+		<java.version>17</java.version>
+		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>6.1.7.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -34,6 +31,11 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>4.20.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -61,6 +63,39 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.tinkoff.translator.TranslatorApplication</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>assemble-all</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<useFile>false</useFile>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
