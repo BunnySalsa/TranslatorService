@@ -2,13 +2,10 @@ package com.tinkoff.translator.repositories;
 
 import com.tinkoff.translator.entities.RequestEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.format.DateTimeFormatter;
 
-@Repository
 @RequiredArgsConstructor
 public class RequestRepository {
 
