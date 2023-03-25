@@ -1,24 +1,20 @@
 package com.tinkoff.translator.client;
 
 import com.tinkoff.translator.client.dto.IamTokenDto;
-import com.tinkoff.translator.client.dto.TextDto;
 import com.tinkoff.translator.client.dto.YaMessageDto;
 import com.tinkoff.translator.client.dto.YaTranslationDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.stream.StreamSupport;
 
 @Data
 @RequiredArgsConstructor
@@ -28,6 +24,7 @@ public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, Ya
     private static final String TRANSLATE_API_URL = "/translate/v2/translate";
     private static final long TIMEOUT_IN_SECONDS = 20;
     private static final int MAX_THREADS = 10;
+    private static final int FIRST_DTO = 0;
     private IamTokenDto token;
     @Value("${yandex.folder-id}")
     private String folderId;
@@ -75,24 +72,19 @@ public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, Ya
         int i = 0;
         for (String s : messageDto.getTexts()) {
             result.get(i).getTexts().add(s);
-            i = i < MAX_THREADS - 1 ? i + 1 : 0;
+            i = i < MAX_THREADS - 1 ? i + 1 : FIRST_DTO;
         }
         return result;
     }
 
     private YaTranslationDto assembleYaTranslationDto(List<YaTranslationDto> list) {
         YaTranslationDto translationDto = new YaTranslationDto(new ArrayList<>());
-        int i = 0;
-        int j = 0;
-        while (i < list.get(j).getTranslations().size()) {
-            while (j < MAX_THREADS) {
+        for (int i = 0; i < list.get(FIRST_DTO).getTranslations().size(); i++) {
+            for (int j = 0; j < MAX_THREADS; j++) {
                 if (i < list.get(j).getTranslations().size())
                     translationDto.getTranslations().add(list.get(j).getTranslations().get(i));
                 else break;
-                j++;
             }
-            j = 0;
-            i++;
         }
         return translationDto;
     }
