@@ -10,7 +10,7 @@ public class TranslationDtoMapper {
     public static final String DIDN_T_DETECTED = "didn't detected";
 
     public TranslationDto toServiceDto(YaTranslationDto translationDto, MessageDto messageDto) {
-        String detectedLanguage = translationDto.getTranslations().isEmpty() ?  DIDN_T_DETECTED
+        String detectedLanguage = translationDto.getTranslations().isEmpty() ? DIDN_T_DETECTED
                 : translationDto.getTranslations().get(0).getDetectedLanguageCode();
         return TranslationDto.builder()
                 .sourceLanguage(messageDto.getSourceLanguage() == null ? detectedLanguage : messageDto.getSourceLanguage())

@@ -8,7 +8,6 @@ RUN mvn package
 FROM openjdk:17
 WORKDIR /app
 EXPOSE 8081
-ENV OAuth-token y0_AgAAAABXco2tAATuwQAAAADfFp0PXf4JVyp5Q4O1FZVuT6ooVZqHjkg
-ENV folderId b1gkd141l14iovkfjeif
+ENV API-KEY ${API-KEY}
 COPY --from=0 /target/*-jar-with-dependencies.jar .
 ENTRYPOINT ["java", "-jar","translator-0.0.1-SNAPSHOT-jar-with-dependencies.jar", "-port=8081"]
