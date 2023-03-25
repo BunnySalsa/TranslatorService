@@ -1,20 +1,24 @@
 package com.tinkoff.translator.client;
 
 import com.tinkoff.translator.client.dto.IamTokenDto;
+import com.tinkoff.translator.client.dto.TextDto;
 import com.tinkoff.translator.client.dto.YaMessageDto;
 import com.tinkoff.translator.client.dto.YaTranslationDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.StreamSupport;
 
 @Data
 @RequiredArgsConstructor
