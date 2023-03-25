@@ -3,6 +3,7 @@ package com.tinkoff.translator.client.dto;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 

@@ -2,13 +2,12 @@ package com.tinkoff.translator.repositories;
 
 import com.tinkoff.translator.entities.TranslationResultEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Scope;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-@Repository
 @RequiredArgsConstructor
 public class TranslationRepository {
     private static final int NUMBER_OF_QUERY_COLUMN = 1;

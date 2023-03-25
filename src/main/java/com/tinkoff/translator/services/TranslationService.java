@@ -16,16 +16,13 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 public class TranslationService {
 
-
     private final TranslatorClient<YaMessageDto, YaTranslationDto> client;
-    private final MessageDtoMapper messageDtoMapper;
-    private final TranslationDtoMapper translationDtoMapper;
     private final StorageService storageService;
 
     public TranslationDto translate(MessageDto messageDto, String clientIp) throws ExecutionException, InterruptedException {
-        YaMessageDto yaMessageDto = messageDtoMapper.toYaDto(messageDto);
+        YaMessageDto yaMessageDto = new MessageDtoMapper().toYaDto(messageDto);
         YaTranslationDto yaTranslationDto = client.translate(yaMessageDto);
         storageService.save(clientIp, yaMessageDto, yaTranslationDto);
-        return translationDtoMapper.toServiceDto(yaTranslationDto, messageDto);
+        return new TranslationDtoMapper().toServiceDto(yaTranslationDto, messageDto);
     }
 }
