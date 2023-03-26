@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TranslationResultEntity {
+public class TranslationEntity {
 
     private Long id;
     private Long request;
