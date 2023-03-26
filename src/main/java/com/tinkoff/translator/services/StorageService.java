@@ -3,7 +3,7 @@ package com.tinkoff.translator.services;
 import com.tinkoff.translator.client.dto.YaMessageDto;
 import com.tinkoff.translator.client.dto.YaTranslationDto;
 import com.tinkoff.translator.entities.RequestEntity;
-import com.tinkoff.translator.entities.TranslationResultEntity;
+import com.tinkoff.translator.entities.TranslationEntity;
 import com.tinkoff.translator.mappers.RequestMapper;
 import com.tinkoff.translator.mappers.TranslationMapper;
 import com.tinkoff.translator.repositories.RequestRepository;
@@ -24,9 +24,9 @@ public class StorageService {
     public void save(String clientIp, YaMessageDto yaMessageDto, YaTranslationDto yaTranslationDto) {
         RequestEntity request = new RequestMapper().toRequest(OffsetDateTime.now(), clientIp);
         requestRepository.save(request);
-        List<TranslationResultEntity> resultList = new TranslationMapper()
+        List<TranslationEntity> resultList = new TranslationMapper()
                 .toTranslationResultList(request.getId(), yaTranslationDto, yaMessageDto);
-        for (TranslationResultEntity result : resultList) {
+        for (TranslationEntity result : resultList) {
             translationRepository.save(result);
         }
     }

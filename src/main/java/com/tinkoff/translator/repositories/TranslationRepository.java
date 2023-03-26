@@ -1,6 +1,6 @@
 package com.tinkoff.translator.repositories;
 
-import com.tinkoff.translator.entities.TranslationResultEntity;
+import com.tinkoff.translator.entities.TranslationEntity;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Connection;
@@ -18,7 +18,7 @@ public class TranslationRepository {
             "(request,source_language,target_language,source_text,target_text) VALUES (?,?,?,?,?)";
     private final Connection connection;
 
-    public boolean save(TranslationResultEntity entity) {
+    public boolean save(TranslationEntity entity) {
         try (PreparedStatement statement = connection.prepareStatement(PS_INSERT_RESULT)) {
             statement.setLong(NUMBER_OF_QUERY_COLUMN, entity.getRequest());
             statement.setString(NUMBER_OF_SOURCE_LANGUAGE_COLUMN, entity.getSourceLang());
