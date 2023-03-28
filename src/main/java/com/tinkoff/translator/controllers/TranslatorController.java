@@ -1,5 +1,6 @@
 package com.tinkoff.translator.controllers;
 
+import com.tinkoff.translator.client.dto.ExceptionDto;
 import com.tinkoff.translator.dto.MessageDto;
 import com.tinkoff.translator.services.TranslationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,9 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestClientException;
-
-import java.util.concurrent.ExecutionException;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,11 +24,11 @@ public class TranslatorController {
         try {
             return ResponseEntity.ok(service.translate(message,
                     request.getRemoteAddr()));
-        } catch (ExecutionException | InterruptedException exception) {
+        } catch (HttpClientErrorException exception) {
+            return ResponseEntity.badRequest().body(exception.getResponseBodyAs(ExceptionDto.class));
+        } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             return ResponseEntity.internalServerError().build();
-        } catch (RestClientException exception) {
-            return ResponseEntity.badRequest().build();
         }
     }
 
