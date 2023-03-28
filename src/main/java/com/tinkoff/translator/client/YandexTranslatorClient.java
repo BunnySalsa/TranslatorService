@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -32,13 +32,13 @@ public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, Ya
     private String translateApiUrl;
     private RestTemplate template = new RestTemplate();
 
-    public YaTranslationDto translate(YaMessageDto messageDto) throws RestClientException, InterruptedException {
+    public YaTranslationDto translate(YaMessageDto messageDto) throws InterruptedException {
         HttpHeaders headers = new HttpHeaders();
         headers.add(AUTHORIZATION, apiKey);
         return assembleYaTranslationDto(requestInThreads(messageDto, headers));
     }
 
-    private List<YaTranslationDto> requestInThreads(YaMessageDto messageDto, HttpHeaders headers) throws InterruptedException {
+    private List<YaTranslationDto> requestInThreads(YaMessageDto messageDto, HttpHeaders headers) throws InterruptedException, HttpClientErrorException {
         List<YaMessageDto> list = divideYaMessageDto(messageDto);
         List<Future<YaTranslationDto>> futures = new ArrayList<>();
         ExecutorService service = Executors.newFixedThreadPool(MAX_THREADS);
@@ -48,15 +48,20 @@ public class YandexTranslatorClient implements TranslatorClient<YaMessageDto, Ya
         service.shutdown();
         List<YaTranslationDto> translationDtoList = new ArrayList<>();
         if (service.awaitTermination(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS)) {
-            translationDtoList.addAll(futures.stream().map(this::safeGet).toList());
+            for (Future<YaTranslationDto> future : futures) {
+                translationDtoList.add(safeGet(future));
+            }
         }
         return translationDtoList;
     }
 
-    private YaTranslationDto safeGet(Future<YaTranslationDto> future) {
+    private YaTranslationDto safeGet(Future<YaTranslationDto> future) throws HttpClientErrorException {
         try {
             return future.get();
-        } catch (ExecutionException | InterruptedException exception) {
+        } catch (ExecutionException exception) {
+            if (exception.getCause() instanceof HttpClientErrorException exception1) throw exception1;
+            return YaTranslationDto.builder().translations(new ArrayList<>()).build();
+        } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             return YaTranslationDto.builder().translations(new ArrayList<>()).build();
         }
